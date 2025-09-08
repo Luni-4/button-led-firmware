@@ -1,0 +1,90 @@
+[package]
+edition      = "2024"
+name         = "button-led-firmware"
+rust-version = "1.89"
+version      = "0.1.0"
+
+[dependencies]
+ascot.version = "0.1.0"
+ascot.path = "../ascot/crates/ascot"
+
+esp-bootloader-esp-idf = { version = "0.2.0", features = ["esp32c3"] }
+esp-hal = { version = "=1.0.0-rc.0", features = [
+  "esp32c3",
+  "log-04",
+  "unstable",
+] }
+log = "0.4.27"
+
+embassy-net = { version = "0.7.0", features = [
+  "dhcpv4",
+  "log",
+  "medium-ethernet",
+  "tcp",
+  "udp",
+] }
+esp-alloc = "0.8.0"
+esp-backtrace = { version = "0.17.0", features = [
+  "esp32c3",
+  "exception-handler",
+  "panic-handler",
+  "println",
+] }
+esp-println = { version = "0.15.0", features = ["esp32c3", "log-04"] }
+critical-section = "1.2.0"
+embassy-executor = { version = "0.7.0", features = [
+  "log",
+  "task-arena-size-65536",
+] }
+embassy-time = { version = "0.5.0", features = ["log"] }
+esp-hal-embassy = { version = "0.9.0", features = ["esp32c3", "log-04"] }
+esp-wifi = { version = "0.15.0", features = [
+  "ble",
+  "builtin-scheduler",
+  "coex",
+  "esp-alloc",
+  "esp32c3",
+  "log-04",
+  "smoltcp",
+  "wifi",
+] }
+static_cell = "2.1.1"
+embassy-sync = "0.7.0"
+
+embedded-io-async = "0.6.1"
+
+edge-http = "0.6.0" 
+edge-nal = "0.5.0" 
+edge-nal-embassy = "0.6.0"
+
+serde.version = "1.0"
+serde.default-features = false
+serde.features = ["derive"]
+
+serde_json.version = "1"
+serde_json.default-features = false
+serde_json.features = ["alloc"]
+
+toml-cfg.version = "0.2.0"
+toml-cfg.default-features = false
+
+[build-dependencies]
+toml-cfg.version = "0.2.0"
+toml-cfg.default-features = false
+
+[features]
+state = []
+
+[profile.dev]
+# Rust debug is too slow.
+# For debug builds always builds with some optimization
+opt-level = "s"
+
+[profile.release]
+codegen-units    = 1     # LLVM can perform better optimizations using a single thread
+debug            = 2
+debug-assertions = false
+incremental      = false
+lto              = 'fat'
+opt-level        = 's'
+overflow-checks  = false
